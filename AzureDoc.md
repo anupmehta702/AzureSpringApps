@@ -25,8 +25,11 @@ you need to make below change in pipeline's (azure-pipelines)yaml file - <br />
 pool: <br />
  name: Default <br />
 
-Refer --> https://www.pluralsight.com/cloud-guru/labs/azure/building-apps-using-self-hosted-build-agents-in-azure-pipelines <br /> 
+Refer ( How to run azure pipeline from local machine ) --> https://www.pluralsight.com/cloud-guru/labs/azure/building-apps-using-self-hosted-build-agents-in-azure-pipelines <br /> 
 
 ## References 
 https://learn.microsoft.com/en-us/azure/spring-apps/how-to-cicd?pivots=programming-language-java <br />
-https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/azure-spring-cloud-v0?view=azure-pipelines --> for springApps devops task <br />
+Azure devops --> https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/azure-spring-cloud-v0?view=azure-pipelines <br />
+Azure autoscaling --> https://learn.microsoft.com/en-us/azure/spring-apps/how-to-setup-autoscale#navigate-to-the-autoscale-page-in-the-azure-portal <br />
+
+Azure baseline architecture --> https://learn.microsoft.com/en-us/azure/architecture/web-apps/spring-apps/architectures/spring-apps-multi-region <br />

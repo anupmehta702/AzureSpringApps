@@ -1,0 +1,42 @@
+server:
+  port: ${studentPort:8282}
+deployed:
+  from: ${destination:WindowLocalMachine}
+---
+spring:
+  profiles: H2Mem
+  h2:
+    console.enabled: true # to access DB via URL -->http://localhost:8080/h2-console
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    #hibernate.ddl-auto: none
+    show-sql: true
+  datasource:
+    url: jdbc:h2:mem:studentdb # use jdbc:h2:file:/data/studentdb for file based H2 DB
+    driverClassName: org.h2.Driver
+    username: ${SPRING_DATASOURCE_USERNAME:sa}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
+    initialization-mode: always # THis runs data.sql
+    continue-on-error: true
+db:
+  source: inMemH2
+---
+spring:
+  profiles: H2File
+  h2:
+    console.enabled: true # to access DB via URL -->http://localhost:8080/h2-console
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    #hibernate.ddl-auto: update # to add only updated columns or schema changes,indirectly persisting the data and not dropping the table on startup (default value is "create-drop")
+    show-sql: true
+  datasource:
+    url: jdbc:h2:file:~/studentdb #  for file based H2 DB stred in C:/Users/anupm/studentdb.mv.db
+    driverClassName: org.h2.Driver
+    username: ${SPRING_DATASOURCE_USERNAME:sa}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
+    initialization-mode: always # this runs data.sql file
+    continue-on-error: true
+db:
+  source: inMemFileH2
+
+---
