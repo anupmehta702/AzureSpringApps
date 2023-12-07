@@ -1,0 +1,39 @@
+# Maven
+# Build your Java project and run tests with Apache Maven.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/java
+
+trigger:
+- master
+
+pool:
+  #vmImage: ubuntu-latest
+  name: Default
+
+steps:
+- task: Maven@3
+  inputs:
+    mavenPomFile: 'pom.xml'
+    mavenOptions: '-Xmx3072m'
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.8'
+    jdkArchitectureOption: 'x64'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    goals: 'package'
+- task: AzureSpringCloud@0
+  inputs:
+    azureSubscription: 'Pay-As-You-Go(0479e180-7a73-4954-bb1d-1f5e815990bd)'
+    Action: 'Deploy'
+    AzureSpringCloud: '/subscriptions/0479e180-7a73-4954-bb1d-1f5e815990bd/resourceGroups/myPayAsYouGoSpringAppsSubscription/providers/Microsoft.AppPlatform/Spring/helloworldspringservice'
+    AppName: 'studentservice'
+    UseStagingDeployment: true
+    Package: 'target/AzureSpringApps-1.0.jar'
+    EnvironmentVariables: -destination fromGreen
+- task: AzureSpringCloud@0
+  inputs:
+    azureSubscription: 'Pay-As-You-Go(0479e180-7a73-4954-bb1d-1f5e815990bd)'
+    Action: 'Set Production'
+    AzureSpringCloud: '/subscriptions/0479e180-7a73-4954-bb1d-1f5e815990bd/resourceGroups/myPayAsYouGoSpringAppsSubscription/providers/Microsoft.AppPlatform/Spring/helloworldspringservice'
+    AppName: 'studentservice'
+    UseStagingDeployment: true
