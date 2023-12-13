@@ -4,7 +4,11 @@ deployed:
   from: ${destination:WindowLocalMachine}
 ---
 spring:
-  profiles: H2Mem
+  spring:
+    config:
+      activate:
+        on-profile: H2Mem
+  #profiles: H2Mem
   h2:
     console.enabled: true # to access DB via URL -->http://localhost:8080/h2-console
   jpa:
@@ -22,7 +26,10 @@ db:
   source: inMemH2
 ---
 spring:
-  profiles: H2File
+  config:
+    activate:
+      on-profile: H2File
+  #profiles: H2File
   h2:
     console.enabled: true # to access DB via URL -->http://localhost:8080/h2-console
   jpa:
@@ -38,5 +45,30 @@ spring:
     continue-on-error: true
 db:
   source: inMemFileH2
+
+---
+spring:
+  config:
+    activate:
+      on-profile: AzureDB
+  #profiles: AzureDB
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    hibernate.ddl-auto: none # by default created the tables/ schemas
+    show-sql: true
+    defer-datasource-initialization: true
+    init.mode: always # this runs data.sql file but only for embedded/in memory DB
+  datasource:
+    url: jdbc:mysql://studentmysqldb.mysql.database.azure.com:3306/studentdb?serverTimezone=UTC
+    username: mydemouser
+    password: admin$123
+    initialization-mode: always # this runs data.sql file but only for embedded/in memory DB
+    continue-on-error: true
+db:
+  source: AzureDB1
+logging:
+  level.org.hibernate.SQL: DEBUG
 
 ---
