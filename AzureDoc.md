@@ -68,6 +68,14 @@ az keyvault set-policy --name java-keyvault-demo-am --object-id d67462f0-d1ea-47
 Add certificate of https://java-keyvault-demo-am.vault.azure.net/ in your java truststore using below command <br />
 keytool -importcert -trustcacerts -alias AzureKeyVault -file "C:\AzureCert\vault.azure.net.crt" -keystore "C:\Program Files\Java\jdk1.8.0_73\jre\lib\security\cacerts"
 
+## Azure SQL DB
+how to connect to Azure SQL <br />
+open azure cloudshell and enter below command --> <br />
+mysql -h studentmysqldb.mysql.database.azure.com -u mydemouser -p <br />
+connect studentdb <br />
+select * from student ; <br />
+
+
 ## References 
 CICD --> https://learn.microsoft.com/en-us/azure/spring-apps/how-to-cicd?pivots=programming-language-java <br />
 
@@ -78,3 +86,6 @@ Azure autoscaling --> https://learn.microsoft.com/en-us/azure/spring-apps/how-to
 Azure baseline architecture --> https://learn.microsoft.com/en-us/azure/architecture/web-apps/spring-apps/architectures/spring-apps-multi-region <br />
 
 Azure key vault --> https://azure.github.io/cloud-scale-data-for-devs-guide/get-started-with-java-and-key-vault.html <br />
+
+How to assign Azure spring apps access to vault --> https://learn.microsoft.com/en-us/azure/spring-apps/tutorial-managed-identities-key-vault?tabs=user-assigned-managed-identity <br />
+

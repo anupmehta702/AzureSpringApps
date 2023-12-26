@@ -2,7 +2,7 @@
 # student-service
 This repository is used for spring cloud functionality
 
-java -jar student-service-0.0.1-SNAPSHOT.jar -Dserver.port=8085
+java -jar AzureSpringApps-1.0.jar -Dserver.port=8085 -Dspring.profiles.active=H2Mem
 
 OR
 
@@ -48,70 +48,78 @@ az provider register --namespace Microsoft.SaaS <br />
 
 ### Create spring apps related resources
 az term accept --publisher vmware-inc --product azure-spring-cloud-vmware-tanzu-2 --plan asa-ent-hr-mtr <br />
-az spring create --name helloworldspringservice --sku Enterprise <br /> 
+az spring create --name azurespringservice --sku Enterprise <br /> 
 Note for free subscription, Enterprise doesnt work , you need to select basic <br /> 
-az spring app create --service helloworldspringservice --name studentservice --assign-endpoint true <br />
-az spring app deploy --service helloworldspringservice --name studentservice --artifact-path target/student-service-0.0.1-SNAPSHOT.jar <br />
+az spring app create --service azurespringservice --name azurespringapps --assign-endpoint true --system-assigned <br />
+az spring app deploy --service azurespringservice --name azurespringapps --artifact-path target/AzureSpringApps-1.0.jar --env spring.profiles.active=AzureDB KEY_VAULT_NAME=java-keyvault-demo-am <br />
 
 az spring app create --> creates a app and deploys default service. It is deployed in production environment using "default" name <br />
 az spring app deploy --> would deploy your application to production by default <br />
 
+
+Provide azurespringapps access to vault , if you have used vault<br />
+1. Get principal-id of your deployed spring Apps ( use --system-assigned while creating azurespringapps to assign principal to azurespringapps) - <br />
+az spring app show --resource-group FreeTrialSubscriptionResourceGroup --service azurespringservice --name "azurespringapps" <br />
+check for identity.principalId
+2. Assign vault access to the above object id (principal-id) <br />
+az keyvault set-policy --name java-keyvault-demo-am --object-id 54fdd8a1-288d-4c91-b304-bc64f4403b85 --secret-permissions set get list  <br />
+
 You can create a new deployment with a unique name using below command <br />
 az spring app deployment create \
-    --service helloworldspringservice \
-    --app studentservice \
+    --service azurespringservice \
+    --app azurespringapps \
     --name green \
     --env destination=AzureGreen \
     --runtime-version Java_17 \
     --artifact-path target/student-service-0.0.1-SNAPSHOT.jar <br />
 
-az spring app deployment create --service helloworldspringservice --app studentservice --name green --env destination=AzureGreen --runtime-version Java_17 --artifact-path target/student-service-0.0.1-SNAPSHOT.jar <br />
+az spring app deployment create --service azurespringservice --app azurespringapps --name green --env destination=AzureGreen --runtime-version Java_17 --artifact-path target/student-service-0.0.1-SNAPSHOT.jar <br />
 
-then hit API --> https://helloworldspringservice.test.azuremicroservices.io/studentservice/green/echoStudentName/Anoop <br />
+then hit API --> https://azurespringservice.test.azuremicroservices.io/azurespringapps/green/echoStudentName/Anoop <br />
 
 
 ## Blue green deployment <br /> 
 1) create two deployments first -- <br />
- az spring app deployment create --service helloworldspringservice --app studentservice --name blue --env destination=blueAzure --instance-count 2  <br /> 
- az spring app deployment create --service helloworldspringservice --app studentservice --name green --env destination=greenAzure --instance-count 2<br />
+ az spring app deployment create --service azurespringservice --app azurespringapps --name blue --env destination=blueAzure --instance-count 2  <br /> 
+ az spring app deployment create --service azurespringservice --app azurespringapps --name green --env destination=greenAzure --instance-count 2<br />
  
  2) Set "blue" deployment as production from UI ( "set as production" option) <br />
  Deploy code to each deployment <br />
  az spring app deploy \
- --service helloworldspringservice \ 
- --name studentservice \
+ --service azurespringservice \ 
+ --name azurespringapps \
  --deployment blue \
  --artifact-path target/student-service-0.0.1-SNAPSHOT.jar <br />
  
  
- az spring app deploy --service helloworldspringservice  --name studentservice --deployment blue --artifact-path target/student-service-0.0.1-SNAPSHOT.jar <br />
+ az spring app deploy --service azurespringservice  --name azurespringapps --deployment blue --artifact-path target/student-service-0.0.1-SNAPSHOT.jar <br />
   
- hit API --> https://primary:6NUSgE0BH7RDw8h4cjidCdbbRaOSqbVbSivjIKfjTBkqKtI2OeQUEuj9rb0jAXbn@helloworldspringservice.test.azuremicroservices.io/echoStudentName/Anoop <br />
+ hit API --> https://primary:6NUSgE0BH7RDw8h4cjidCdbbRaOSqbVbSivjIKfjTBkqKtI2OeQUEuj9rb0jAXbn@azurespringservice.test.azuremicroservices.io/echoStudentName/Anoop <br />
  Notice API does not have app name and deployment name <br />
  
  3) Now deploy app to green deployment ( staging deployment) -- <br /> 
  az spring app deploy \ 
-  --service helloworldspringservice \ 
-  --name studentservice \
+  --service azurespringservice \ 
+  --name azurespringapps \
   --deployment green \
   --artifact-path target/student-service-0.0.1-SNAPSHOT.jar <br />
   
- hit API --> https://primary:6NUSgE0BH7RDw8h4cjidCdbbRaOSqbVbSivjIKfjTBkqKtI2OeQUEuj9rb0jAXbn@helloworldspringservice.test.azuremicroservices.io/studentservice/newgreen/echoStudentName/Anoop <br />
+ hit API --> https://primary:6NUSgE0BH7RDw8h4cjidCdbbRaOSqbVbSivjIKfjTBkqKtI2OeQUEuj9rb0jAXbn@azurespringservice.test.azuremicroservices.io/azurespringapps/newgreen/echoStudentName/Anoop <br />
  
 Notice API has app name and deployment name <br />
 
 Reference --> https://learn.microsoft.com/en-us/azure/spring-apps/how-to-staging-environment?WT.mc_id=Portal-AppPlatformExtension <br />
  
  4) How to check logs --> <br />
- az spring app logs --name studentservice --service helloworldspringservice --follow <br />
+ az spring app logs --name azurespringapps --service azurespringservice --follow <br />
  <br />
  <br />
  To query multi-instance app --> <br />
  Get names of instances using below command --> <br />
- az spring app show -s helloworldspringservice --name studentservice --query properties.activeDeployment.properties.instances --output table <br />
+ az spring app show -s azurespringservice --name azurespringapps --query properties.activeDeployment.properties.instances --output table <br />
 
-az spring app logs --name studentservice --service helloworldspringservice --follow -i studentservice-blue-14-765c4dbc65-nlzb8 <br />
-az spring app logs --name studentservice --service helloworldspringservice --follow -i studentservice-blue-14-765c4dbc65-qcn7c <br />
+az spring app logs --name azurespringapps --service azurespringservice --follow -i azurespringapps-blue-14-765c4dbc65-nlzb8 <br />
+az spring app logs --name azurespringapps --service azurespringservice --follow -i azurespringapps-blue-14-765c4dbc65-qcn7c <br />
 
  Reference --> https://learn.microsoft.com/en-us/azure/spring-apps/how-to-log-streaming?tabs=azure-portal
  
