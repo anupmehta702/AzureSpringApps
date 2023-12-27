@@ -52,7 +52,7 @@ output --> <br />
   "tenant": "49a278ba-a806-415d-b311-0f0cc30b11de" <br />         
 }<br />                                                           
 
-Add below env variables -->
+Add below env variables to run code locally -->
 spring.profiles.active=AzureDB <br />
 AZURE_CLIENT_ID=73459b1c-c6dd-4e79-b48b-9d9c6fc11f12 <br />
 AZURE_CLIENT_SECRET=52h8Q~cjNVtgjiO4Vw5FOO4EKrjuI7JNUWdT0cXo <br />
@@ -75,6 +75,10 @@ mysql -h studentmysqldb.mysql.database.azure.com -u mydemouser -p <br />
 connect studentdb <br />
 select * from student ; <br />
 
+## Azure redis cache
+
+Azure cache --> https://learn.microsoft.com/en-us/azure/developer/java/spring-framework/configure-spring-boot-initializer-java-app-with-redis-cache
+Azure with Spring data JPA --> https://enfuse.io/spring-boot-application-with-azure-redis-cache/ 
 
 ## References 
 CICD --> https://learn.microsoft.com/en-us/azure/spring-apps/how-to-cicd?pivots=programming-language-java <br />

@@ -1,10 +1,11 @@
 package com.example.studentservice;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "STUDENT")
-public class Student {
+public class Student implements Serializable {
 
     @javax.persistence.Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
